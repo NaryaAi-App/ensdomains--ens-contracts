@@ -142,7 +142,7 @@ contract fusesCheck is PTest {
         wrapper.registerAndWrapETH2LD(
             "sub1",
             agent,
-            10 days,
+            360 days,
             EMPTY_ADDRESS,
             uint16(CANNOT_UNWRAP)
         );
@@ -150,7 +150,7 @@ contract fusesCheck is PTest {
         wrapper.registerAndWrapETH2LD(
             "sub2",
             agent,
-            10 days,
+            360 days,
             EMPTY_ADDRESS,
             uint16(
                 PARENT_CANNOT_CONTROL | CANNOT_UNWRAP | CANNOT_CREATE_SUBDOMAIN
@@ -160,7 +160,7 @@ contract fusesCheck is PTest {
         wrapper.registerAndWrapETH2LD(
             "sub3",
             agent,
-            10 days,
+            360 days,
             EMPTY_ADDRESS,
             uint16(PARENT_CANNOT_CONTROL | CANNOT_UNWRAP | CANNOT_BURN_FUSES)
         );
@@ -168,7 +168,7 @@ contract fusesCheck is PTest {
         wrapper.registerAndWrapETH2LD(
             "sub4",
             agent,
-            10 days,
+            360 days,
             EMPTY_ADDRESS,
             uint16(CANNOT_UNWRAP | CANNOT_SET_RESOLVER)
         );
@@ -178,7 +178,7 @@ contract fusesCheck is PTest {
         wrapper.registerAndWrapETH2LD(
             "sub5",
             agent,
-            10 days,
+            360 days,
             EMPTY_ADDRESS,
             uint16(CANNOT_UNWRAP | CANNOT_SET_TTL)
         );
@@ -188,7 +188,7 @@ contract fusesCheck is PTest {
         wrapper.registerAndWrapETH2LD(
             "sub6",
             agent,
-            10 days,
+            360 days,
             EMPTY_ADDRESS,
             uint16(CANNOT_UNWRAP | CANNOT_TRANSFER)
         );
@@ -196,7 +196,7 @@ contract fusesCheck is PTest {
         wrapper.registerAndWrapETH2LD(
             "sub7",
             agent,
-            10 days,
+            360 days,
             EMPTY_ADDRESS,
             uint16(CANNOT_UNWRAP | CANNOT_APPROVE)
         );
