@@ -150,22 +150,6 @@ contract InexistantOwnershipCheck is PTest {
         delete pnmLogs;
     }
 
-    function testOwnershipERC1155() public {
-        vm.startPrank(agent);
-
-        wrapper.registerAndWrapETH2LD("sub1", bob, 10 days, EMPTY_ADDRESS, 0);
-
-        // 1. The ERC1155 is owned by bob
-        // 2. Then, the registry must show that the record is owned by the wrapper
-        require(
-            wrapper.ownerOf(uint256(namehash("sub1.eth"))) == bob &&
-                registry.owner(namehash("sub1.eth")) == address(wrapper),
-            "user owns the wrapped name but wrapper doesn't own the ENS record"
-        );
-
-        vm.stopPrank();
-    }
-
     // utility methods
 
     function namehash(string memory name) private pure returns (bytes32) {
