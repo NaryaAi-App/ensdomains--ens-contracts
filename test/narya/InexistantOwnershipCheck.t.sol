@@ -2,7 +2,7 @@
 pragma solidity ^0.8.13;
 
 import "../../contracts/registry/ENSRegistry.sol";
-import {MaliciousRegistrar} from "./MaliciousRegistrar.sol";
+import "../../contracts/ethregistrar/BaseRegistrarImplementation.sol";
 import "../../contracts/ethregistrar/DummyOracle.sol";
 import "../../contracts/wrapper/StaticMetadataService.sol";
 import "../../contracts/wrapper/IMetadataService.sol";
@@ -25,7 +25,7 @@ contract InexistantOwnershipCheck is PTest {
     ENSRegistry public registry;
     StaticMetadataService public metadata;
     IETHRegistrarController public controller;
-    MaliciousRegistrar public baseRegistrar;
+    BaseRegistrarImplementation public baseRegistrar;
     ReverseRegistrar public reverseRegistrar;
     PublicResolver public publicResolver;
 
@@ -45,13 +45,9 @@ contract InexistantOwnershipCheck is PTest {
     address savedResolver;
     uint64 savedTTL;
 
-    struct LogInfo {
-        string label;
-        bool isWrapped;
-        address ensOwner;
-    }
-
-    LogInfo[] pnmLogs;
+    string fullname = "abc.eth";
+    bytes32 node;
+    uint256 nodeid;
 
     function setUp() public {
         owner = makeAddr("OWNER");
@@ -69,7 +65,10 @@ contract InexistantOwnershipCheck is PTest {
         registry = new ENSRegistry();
 
         // base registrar
-        baseRegistrar = new MaliciousRegistrar(registry, namehash("eth"));
+        baseRegistrar = new BaseRegistrarImplementation(
+            registry,
+            namehash("eth")
+        );
 
         baseRegistrar.addController(owner);
 
@@ -113,41 +112,23 @@ contract InexistantOwnershipCheck is PTest {
         baseRegistrar.setApprovalForAll(address(wrapper), true);
 
         vm.stopPrank();
-    }
 
-    function actionRegisterAndWrap(string memory label) public {
         vm.startPrank(agent);
+        wrapper.registerAndWrapETH2LD("abc", bob, 360 days, EMPTY_ADDRESS, 0);
+        node = namehash(fullname);
+        nodeid = uint256(node);
 
-        wrapper.registerAndWrapETH2LD(label, bob, 10 days, EMPTY_ADDRESS, 0);
-
-        string memory fullname = string.concat(label, ".eth");
-        bytes32 node = namehash(fullname);
-        uint256 nodeid = uint256(node);
-
-        bool isWrapped = false;
-        if (wrapper.ownerOf(nodeid) == bob) {
-            isWrapped = true;
-        }
-
-        address ensOwner = registry.owner(node);
-
-        pnmLogs.push(LogInfo(label, isWrapped, ensOwner));
-
+        assert(wrapper.ownerOf(nodeid) == bob);
+        assert(registry.owner(node) == address(wrapper));
         vm.stopPrank();
     }
 
     function invariantIsOwnerOfWrappedName() public {
-        for (uint i = 0; i < pnmLogs.length; ++i) {
-            LogInfo memory log = pnmLogs[i];
-            if (log.isWrapped) {
-                require(
-                    log.ensOwner == address(wrapper),
-                    "user owns the wrapped name but wrapper doesn't own the ENS record"
-                );
-            }
-        }
-
-        delete pnmLogs;
+        require(wrapper.ownerOf(nodeid) == bob, "wrapped name changed owner");
+        require(
+            registry.owner(node) == address(wrapper),
+            "ens record for wrapped name changed"
+        );
     }
 
     // utility methods
