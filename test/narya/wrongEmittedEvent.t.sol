@@ -217,7 +217,9 @@ contract wrongEmittedEvent is PTest {
         // console.log("price", price.base+price.premium);
         // console.log("price2", price.base+price.premium+1000);
 
-        pnmLogs.push(LogInfo(name, price.base + price.premium, eventPrice));
+        pnmLogs.push(
+            LogInfo(name, price.base + price.premium + 1000, eventPrice)
+        );
 
         vm.stopPrank();
     }
