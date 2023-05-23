@@ -199,6 +199,8 @@ contract wrongEmittedEvent is PTest {
 
         uint256 balanceAfter = user.balance;
 
+        console.log("spent", balanceBefore - balanceAfter);
+
         require(balanceAfter == balanceBefore - price.base - price.premium);
 
         // extract event arguments and save log
@@ -216,10 +218,9 @@ contract wrongEmittedEvent is PTest {
         // console.log("node", uint256(keccak256(bytes(name))));
         // console.log("price", price.base+price.premium);
         // console.log("price2", price.base+price.premium+1000);
+        // console.log("event price", eventPrice);
 
-        pnmLogs.push(
-            LogInfo(name, price.base + price.premium + 1000, eventPrice)
-        );
+        pnmLogs.push(LogInfo(name, price.base + price.premium, eventPrice));
 
         vm.stopPrank();
     }

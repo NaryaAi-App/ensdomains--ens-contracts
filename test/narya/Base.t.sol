@@ -43,8 +43,4 @@ contract Base is PTest {
 
         vm.stopPrank();
     }
-
-    function testme() public {
-        assert(false);
-    }
 }
